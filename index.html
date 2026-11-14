@@ -78,11 +78,9 @@ iframe{border:0;width:100%;flex:1;min-height:0;background:#0a201e}
 <section class="panel" id="finalPanel"><div class="section-title"><div class="kicker">Le dernier compartiment</div><h2>Le secret des cartes</h2></div>
 <p id="finalText" class="smallnote">Le compartiment est encore scellé.</p>
 <div id="finalLocked" class="section-title"><div class="final-lock">✦ Fermé jusqu’aux six victoires ✦</div></div>
-<div id="finalUnlocked" class="hidden"><p class="smallnote">« Vous avez toutes les pièces. Observez : les cartes peuvent enfin retrouver leur place… » — Varenne</p>
-<div id="finalCards" class="final-cards"></div><div id="finalControls">
-<button class="btn" id="arrange">✧ Remettre les cartes dans l’ordre</button>
-</div></div>
-<div id="finalSuccess" class="hidden"><p class="success">✦ VALOMBRE ✦</p><p class="smallnote">« Vous avez trouvé le nom. Gardez-le en mémoire : il faudra le confronter aux autres indices de l’enquête. » — Varenne</p><div style="text-align:center"><button class="btn" id="exit2">↩ Reprendre l’enquête</button></div></div>
+<div id="finalUnlocked" class="hidden"><p class="smallnote">« Les huit cartes sont réunies. Ne cherchez pas encore à les remettre dans l’ordre : le dernier secret ne se révélera qu’avec l’autre moitié du message. » — Varenne</p>
+<p class="smallnote">Retournez dans l’application Jean &amp; Virgile. Attendez que Loriane ait terminé son enquête. Lorsque vous serez tous prêts, placez les deux téléphones côte à côte.</p>
+<div style="text-align:center"><button class="btn" id="exit2">↩ Reprendre l’enquête Jean &amp; Virgile</button></div></div>
 </section><div class="smallnote"><button class="btn alt small" id="clear">Réinitialiser la progression (tests)</button></div>
 </div>
 <div id="gameView" class="hidden"><div class="gamebar"><button class="btn alt small" id="homeBtn">⌂ La boîte</button><span id="gameTitle"></span></div><iframe id="frame" allow="accelerometer; gyroscope; magnetometer" title="Épreuve de Varenne"></iframe></div>
@@ -100,7 +98,7 @@ const KEY='varenne-boite-v1';
 const $=id=>document.getElementById(id);
 let state={};try{state=JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){}
 state.done=state.done||{};
-let current=null,ordered=!!state.final;
+let current=null;
 const shuffled=['R','O','V','B','E','M','A','L'];
 function save(){localStorage.setItem(KEY,JSON.stringify(state))}
 function card(letter){const el=document.createElement('div');el.className='cardmini';el.style.setProperty('--card-image',`url("carte_${letter}.png")`);el.setAttribute('role','img');el.setAttribute('aria-label','Carte de Varenne : '+letter);return el}
@@ -113,22 +111,16 @@ let visible=0;shuffled.forEach(l=>{if(obtained.includes(l)){obtained.splice(obta
 $('cardsCount').textContent=visible+' / 8 cartes réunies';
 $('finalLocked').classList.toggle('hidden',n===6);
 $('finalUnlocked').classList.toggle('hidden',n!==6);
-$('finalSuccess').classList.toggle('hidden',!state.final);
-$('finalText').textContent=n===6?'Les six épreuves sont terminées. Le mécanisme s’ouvre.':'Encore '+(6-n)+' épreuve'+(6-n>1?'s':'')+' avant l’ouverture du dernier compartiment.';
-if(n===6){
-renderFinalCards((ordered||state.final)?'VALOMBRE'.split(''):shuffled);$('arrange').classList.toggle('hidden',ordered||!!state.final);
 
+$('finalText').textContent=n===6?'Les six épreuves sont terminées. Les huit cartes sont réunies : gardez-les dans leur ordre mélangé.':'Encore '+(6-n)+' épreuve'+(6-n>1?'s':'')+' avant l’ouverture du dernier compartiment.';
 }
-}
-function renderFinalCards(letters){$('finalCards').replaceChildren();letters.forEach((l,i)=>{let c=card(l);c.style.setProperty('--i',i);$('finalCards').append(c)});$('finalCards').className='final-cards '+(ordered?'ordered':'shuffling')}
 function openGame(g){current=g.id;$('homeView').classList.add('hidden');$('gameView').classList.remove('hidden');$('gameTitle').textContent=g.title+' · '+g.player;$('frame').src=g.file+(g.id==='foule'?'?v=20261114-reprise-v3':'');scrollTo(0,0)}
 function home(){current=null;$('frame').removeAttribute('src');$('gameView').classList.add('hidden');$('homeView').classList.remove('hidden');render();scrollTo(0,0)}
 function complete(id){if(current!==id||state.done[id])return;state.done[id]=true;save();let g=GAMES.find(x=>x.id===id);$('rewardCards').replaceChildren();[...g.letters].forEach(l=>$('rewardCards').append(card(l)));$('rewardModal').classList.remove('hidden')}
 window.addEventListener('message',e=>{if(e.source!==$('frame').contentWindow||!e.data||e.data.source!=='varenne-box')return;if(e.data.type==='completed')complete(e.data.game);if(e.data.type==='home')home()});
 $('homeBtn').onclick=home;$('closeReward').onclick=()=>{$('rewardModal').classList.add('hidden');home()};
-$('arrange').onclick=()=>{ordered=true;renderFinalCards('VALOMBRE'.split(''));$('arrange').classList.add('hidden');state.final=true;save();setTimeout(()=>{$('finalSuccess').classList.remove('hidden');$('finalSuccess').scrollIntoView({behavior:'smooth',block:'nearest'})},1250)};
 function exit(){const url=new URLSearchParams(location.search).get('retour');if(url){try{const u=new URL(url,location.href);if(u.origin===location.origin){location.href=u.href;return}}catch(e){}}alert('Retourne à l’onglet de l’application Jean & Virgile pour reprendre l’enquête.')}
 $('exit').onclick=exit;$('exit2').onclick=exit;
-$('clear').onclick=()=>{if(confirm('Effacer la progression des six épreuves ?')){state={done:{}};ordered=false;save();$('arrange').classList.remove('hidden');render()}};
+$('clear').onclick=()=>{if(confirm('Effacer la progression des six épreuves ?')){state={done:{}};save();render()}};
 render();
 </script></body></html>
