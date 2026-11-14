@@ -121,7 +121,7 @@ renderFinalCards((ordered||state.final)?'VALOMBRE'.split(''):shuffled);$('arrang
 }
 }
 function renderFinalCards(letters){$('finalCards').replaceChildren();letters.forEach((l,i)=>{let c=card(l);c.style.setProperty('--i',i);$('finalCards').append(c)});$('finalCards').className='final-cards '+(ordered?'ordered':'shuffling')}
-function openGame(g){current=g.id;$('homeView').classList.add('hidden');$('gameView').classList.remove('hidden');$('gameTitle').textContent=g.title+' · '+g.player;$('frame').src=g.file;scrollTo(0,0)}
+function openGame(g){current=g.id;$('homeView').classList.add('hidden');$('gameView').classList.remove('hidden');$('gameTitle').textContent=g.title+' · '+g.player;$('frame').src=g.file+(g.id==='foule'?'?v=20261114-reprise-v3':'');scrollTo(0,0)}
 function home(){current=null;$('frame').removeAttribute('src');$('gameView').classList.add('hidden');$('homeView').classList.remove('hidden');render();scrollTo(0,0)}
 function complete(id){if(current!==id||state.done[id])return;state.done[id]=true;save();let g=GAMES.find(x=>x.id===id);$('rewardCards').replaceChildren();[...g.letters].forEach(l=>$('rewardCards').append(card(l)));$('rewardModal').classList.remove('hidden')}
 window.addEventListener('message',e=>{if(e.source!==$('frame').contentWindow||!e.data||e.data.source!=='varenne-box')return;if(e.data.type==='completed')complete(e.data.game);if(e.data.type==='home')home()});
