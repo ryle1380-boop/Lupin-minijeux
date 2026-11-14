@@ -94,9 +94,8 @@ const GAMES=[
 {id:'loupe',title:'La Lentille des apparences',player:'Pour Jean',letters:'L',file:'loupe.html'},
 {id:'bille',title:'Les cinq épreuves de Varenne',player:'Pour Virgile',letters:'VA',file:'bille.html'},
 {id:'coffre',title:'Le Coffre de Varenne',player:'Pour Jean',letters:'O',file:'coffre.html'},
-{id:'foule',title:'La foule aux mille visages',player:'Pour Virgile',letters:'RE',file:'foule.html'}];,
-{id:'cryptex',title:'Le Cryptex de Varenne',player:'Pour Jean',letters:'B',file:'cryptex.html'}
-{id:'foule',title:'La foule aux mille visages',player:'Pour Virgile',letters:'RE',file:'foule.html'}];
+{id:'foule',title:'La foule aux mille visages',player:'Pour Virgile',letters:'RE',file:'foule.html'},
+{id:'cryptex',title:'Le Cryptex de Varenne',player:'Pour Jean',letters:'B',file:'cryptex.html'}];
 const KEY='varenne-boite-v1';
 const $=id=>document.getElementById(id);
 let state={};try{state=JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){}
